@@ -1,8 +1,14 @@
 let connection = async ()=>{
-    let result = await axios({
-        method:'get',
-        url:'https://jsonplaceholder.typicode.com/posts'
-    });
+    let result;
+    try {
+        result = await axios({
+            method:'get',
+            url:'https://jsonplaceholder.typicode.com/posts'
+        });
+    } catch (error) {
+        return [{title : 'errir' ,body: 'error'}]
+    }
+    
 
     let resultToList = [];
     result.data.forEach(element => {
@@ -23,25 +29,20 @@ let connection = async ()=>{
     list.forEach(element=>{
         let elem = resultToList[parseInt(element)];
         let newBody = elem.body.replace(/(?:\r\n|\r|\n)/g,"");
-        resultList.push({title : elem.title ,body: " - "+newBody});
+        resultList.push({title : elem.title ,body:newBody});
     });
 
     return resultList;
 };
 
 document.addEventListener('DOMContentLoaded',()=>{
-    document.getElementById('button').addEventListener('click',async ()=>{
+    document.querySelector('#button').addEventListener('click',async ()=>{
         let result = await connection();
-        let list = document.getElementById('list');
+        let list = document.querySelector('#list');
         list.innerHTML = "";
         let printLength = result.length;
         for(let i=0;i<printLength; ++i){
-            var li = document.createElement('li');
-            var b = document.createElement('b');
-            b.append(result[i].title);
-            li.appendChild(b);
-            li.append(result[i].body);
-            list.appendChild(li);
+            list.innerHTML += `<li><b>${result[i].title}</b> - ${result[i].body}</li>`
         }
     })
 });
