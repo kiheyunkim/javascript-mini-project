@@ -23,18 +23,25 @@ let connection = async ()=>{
     list.forEach(element=>{
         let elem = resultToList[parseInt(element)];
         let newBody = elem.body.replace(/(?:\r\n|\r|\n)/g,"");
-        resultList.push(elem.title + " - " + newBody);
+        resultList.push({title : elem.title ,body: " - "+newBody});
     });
 
     return resultList;
 };
 
-$(document).ready(()=>{
-    $('#button').click(async ()=>{
+document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('button').addEventListener('click',async ()=>{
         let result = await connection();
-        $("#list").empty();
-        for(let i=0;i<result.length;++i){
-            $("#list").append(`<li>${result[i]}</li>`)  
+        let list = document.getElementById('list');
+        list.innerHTML = "";
+        let printLength = result.length;
+        for(let i=0;i<printLength; ++i){
+            var li = document.createElement('li');
+            var b = document.createElement('b');
+            b.append(result[i].title);
+            li.appendChild(b);
+            li.append(result[i].body);
+            list.appendChild(li);
         }
     })
-})
+});
